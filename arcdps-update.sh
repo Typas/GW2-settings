@@ -10,6 +10,9 @@ BOON_TABLE_DOWNLOAD_URL="$BOON_TABLE_BASE_URL/download/$BOON_TABLE_FILENAME"
 HEALING_STATS_FILENAME="arcdps_healing_stats.dll"
 HEALING_STATS_BASE_URL="https://github.com/Krappa322/arcdps_healing_stats/releases/latest"
 HEALING_STATS_DOWNLOAD_URL="$HEALING_STATS_BASE_URL/download/$HEALING_STATS_FILENAME"
+MECHANICS_FILENAME="d3d9_arcdps_mechanics.dll"
+MECHANICS_BASE_URL="https://github.com/knoxfighter/GW2-ArcDPS-Mechanics-Log/releases/latest"
+MECHANICS_DOWNLOAD_URL="$MECHANICS_BASE_URL/download/$MECHANICS_FILENAME"
 
 cd /tmp
 rm -f $ARCDPS_FILENAME "$ARCDPS_FILENAME.md5sum" $BOON_TABLE_FILENAME $HEALING_STATS_FILENAME
@@ -36,6 +39,7 @@ if [ -f "$ADDON_VERSIONS_PATH" ]; then
 fi
 BOON_TABLE_VERSION_URL=$(curl -Ls -o /dev/null -w %{url_effective} $BOON_TABLE_BASE_URL)
 HEALING_STATS_VERSION_URL=$(curl -Ls -o /dev/null -w %{url_effective} $HEALING_STATS_BASE_URL)
+MECHANICS_VERSION_URL=$(curl -Ls -o /dev/null -w %{url_effective} $MECHANICS_BASE_URL)
 
 if [ "$BOON_TABLE_VERSION_URL" != "${VERSIONS[0]}" ]; then
     wget2 "$BOON_TABLE_DOWNLOAD_URL"
@@ -49,8 +53,15 @@ if [ "$HEALING_STATS_VERSION_URL" != "${VERSIONS[1]}" ]; then
 else
     echo "healing stats is latest"
 fi
+if [ "$MECHANICS_VERSION_URL" != "${VERSIONS[2]}" ]; then
+    wget2 "$MECHANICS_DOWNLOAD_URL"
+    rsync -uv $MECHANICS_FILENAME "$GW2PATH/$MECHANICS_FILENAME"
+else
+    echo "mechanics is latest"
+fi
 
 cat > "$ADDON_VERSIONS_PATH" <<EOF
 $BOON_TABLE_VERSION_URL
 $HEALING_STATS_VERSION_URL
+$MECHANICS_VERSION_URL
 EOF
