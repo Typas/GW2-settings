@@ -24,6 +24,7 @@ if [ $? -eq 0 ]; then
     echo "arcdps is latest"
 else
     echo "downloading arcdps"
+    rm -f "$ARCDPS_FILENAME"
     wget2 "$ARCDPS_URL"
     md5sum -c $ARCDPS_FILENAME.md5sum || exit 1
     rsync -uv $ARCDPS_FILENAME "$GW2PATH/$ARCDPS_FILENAME"
